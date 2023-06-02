@@ -93,6 +93,20 @@ resource "aws_nat_gateway" "webapp_nat" {
   depends_on = [aws_internet_gateway.igw]
 }
 
+resource "aws_lb" "application_load_balancer" {
+  security_groups    = [aws_security_group.webapp_sg]
+}
+
+resource "aws_lb_target_group" "alb_target_group" {
+  vpc_id      = aws_vpc.webapp_vpc.id
+  name = "aws_lb.application_load_balancer"
+}
+
+resource "aws_lb_listener" "alb_http_listener" {
+  load_balancer_arn = aws_alb.application_load_balancer.arn
+  target_group_arn = aws_lb_target_group.arn
+}
+
 
 
 
